@@ -17,10 +17,3 @@ modify libMessages
 		"{That person/He} {is person}n't here. ";
 	}
 ;
-
-/*
-modify playerActionMessages
-	personNotHere = 'There isn\'t anyone named {you dobj/him} here. '
-	personNotHereButKnown = '{That dobj/He} {is}n\'t here. '
-;
-*/

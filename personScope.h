@@ -2,5 +2,6 @@
 // personScope.h
 //
 
-// Uncomment to enable debugging options.
-//#define __DEBUG_PERSON_SCOPE
+PersonScopeUnthing template 'name';
+
+#define PERSON_SCOPE_H
