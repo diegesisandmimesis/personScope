@@ -54,7 +54,6 @@ modify Action
 		// Try noun resolution again with the scope flag.
 		resolveNouns(gIssuingActor, gActor,
 			new OopsResults(gIssuingActor, gActor));
-
 		
 		// If we still don't have any object matches, give up.
 		// Specifically we want EXACTLY ONE match.  If adding
@@ -82,3 +81,27 @@ modify Action
 ;
 
 modify Actor usePersonScope = nil;
+
+// Replacements for SmellAction and ListenToAction, which are the
+// two places adv3 overrides Action.noMatch().
+replace VerbRule(Smell)
+	( 'smell' | 'sniff' ) dobjList
+	: SmellAction
+	verbPhrase = 'smell/smelling (what)'
+	noMatch(msgObj, actor, txt) {
+		if(tryPersonScope(msgObj, actor, txt))
+			return;
+		msgObj.noMatchNotAware(actor, txt);
+	}
+;
+
+replace VerbRule(ListenTo)
+	( 'hear' | 'listen' 'to' ) dobjList
+	: ListenToAction
+	verbPhrase = 'listen/listening (to what)'
+	noMatch(msgObj, actor, txt) {
+		if(tryPersonScope(msgObj, actor, txt))
+			return;
+		msgObj.noMatchNotAware(actor, txt);
+	}
+;
