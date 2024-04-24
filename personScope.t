@@ -5,6 +5,8 @@
 #include <adv3.h>
 #include <en_us.h>
 
+#include "personScope.h"
+
 // Module ID for the library
 personScopeModuleID: ModuleID {
         name = 'Person Scope Library'
@@ -12,3 +14,5 @@ personScopeModuleID: ModuleID {
         version = '1.0'
         listingOrder = 99
 }
+
+

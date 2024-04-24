@@ -21,29 +21,35 @@
 
 #include "personScope.h"
 
-versionInfo: GameID
-        name = 'personScope Library Demo Game'
-        byline = 'Diegesis & Mimesis'
-        desc = 'Demo game for the personScope library. '
-        version = '1.0'
-        IFID = '12345'
-	showAbout() {
-		"This is a simple test game that demonstrates the features
-		of the personScope library.
-		<.p>
-		Consult the README.txt document distributed with the library
-		source for a quick summary of how to use the library in your
-		own games.
-		<.p>
-		The library source is also extensively commented in a way
-		intended to make it as readable as possible. ";
-	}
+versionInfo: GameID;
+gameMain: GameMainDef initialPlayerChar = me;
+
+middleRoom: Room 'Middle Room'
+	"This is the middle room.  There are rooms north and south of here. "
+	north = northRoom
+	south = southRoom
 ;
-gameMain: GameMainDef
-	initialPlayerChar = me
-	inlineCommand(cmd) { "<b>&gt;<<toString(cmd).toUpper()>></b>"; }
-	printCommand(cmd) { "<.p>\n\t<<inlineCommand(cmd)>><.p> "; }
++me: Person
+	usePersonScope = true
+;
++pebble: Thing '(small) (round) pebble' 'pebble' "A small, round pebble. ";
+
+northRoom: Room 'North Room'
+	"This is the north room.  There's another room to the south. "
+	south = middleRoom
+;
++alice: Person 'alice' 'Alice'
+	"She looks like the first person you'd turn to in a problem. "
+	isHer = true
+	isProperName = true
 ;
 
-startRoom: Room 'Void' "This is a featureless void.";
-+me: Person;
+southRoom: Room 'South Room'
+	"This is the south room.  There's another room to the north. "
+	north = middleRoom
+;
++bob: Person 'bob' 'Bob'
+	"He looks like Robert, only shorter. "
+	isHim = true
+	isProperName = true
+;
