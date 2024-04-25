@@ -22,11 +22,13 @@ modify Action
 		return(checkPersonScopeFlag(obj));
 	}
 
-	// Check to see if the given object is a) a person, b) the action
-	// is checking the extended person scope, and c) if the actor taking
-	// the action wants the extened person scope.
+	// Check to see if the given object is a) a person, b) has
+	// a proper name, c) the action is configured to check the extended
+	// person scope, and d) if the actor taking the action wants the
+	// extened person scope.
 	checkPersonScopeFlag(obj) {
 		return((obj != nil) && obj.ofKind(Person)
+			&& (obj.isProperName == true)
 			&& (usePersonScope == true)
 			&& (gActor.usePersonScope == true));
 	}

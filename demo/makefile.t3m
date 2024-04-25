@@ -6,3 +6,4 @@
 -lib adv3/adv3
 -lib ../personScope
 -source src/sample.t
+-source reflect.t

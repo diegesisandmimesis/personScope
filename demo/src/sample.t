@@ -25,9 +25,11 @@ versionInfo: GameID;
 gameMain: GameMainDef initialPlayerChar = me;
 
 middleRoom: Room 'Middle Room'
-	"This is the middle room.  There are rooms north and south of here. "
+	"This is the middle room.  There are rooms north, south, and east
+		of here. "
 	north = northRoom
 	south = southRoom
+	east = eastRoom
 ;
 +me: Person
 	usePersonScope = true
@@ -52,4 +54,12 @@ southRoom: Room 'South Room'
 	"He looks like Robert, only shorter. "
 	isHim = true
 	isProperName = true
+;
+
+eastRoom: Room 'East Room'
+	"This is the east room.  The middle room lies to the west. "
+	west = middleRoom
+;
++figure: Person '(mysterious) figure' 'mysterious figure'
+	"They look mysterious. "
 ;
