@@ -100,7 +100,7 @@ modify playerMessages
 			prop = &personNotHere;
 
 		// Notify the actor of the failure.
-		gActor.notifyParseFailure(gActor, prop, obj);
+		actor.notifyParseFailure(gActor, prop, obj);
 		exit;
 	}
 ;
