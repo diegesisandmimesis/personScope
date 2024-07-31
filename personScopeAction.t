@@ -17,6 +17,17 @@ modify Action
 	// Flag on action to include Person instances in scope.
 	usePersonScope = nil
 
+	// Regex stuff for handling possessives.
+	//
+	// This is the base regex to match apostrophe-S possessives.
+	// Broken out in case implementors want to futz around with
+	// alternate apostrophes.
+	_psPossRexPat = '\'s'
+	//
+	// The compiled regex patterns.
+	_psPossRex = static new RexPattern(_psPossRexPat)
+	_psSpacePossRex = static new RexPattern(' ' + _psPossRexPat)
+
 	// Check to see if the object is in scope.
 	objInScope(obj) {
 		// Check to see if we're just "normally" in scope.  If
@@ -163,6 +174,7 @@ modify Action
 		if(!obj.ofKind(Person))
 			return(nil);
 
+		// Looks good, return it.
 		return(obj);
 	}
 
@@ -170,14 +182,29 @@ modify Action
 	_psGetVerb() { return(_psTokenizeOrigText().verbToks); }
 	_psGetNoun() { return(_psTokenizeOrigText().nounToks); }
 
+	// Go through the original action's original tokens and try
+	// to re-construct the original typed verb phrase and
+	// noun phrase.  See PSTokens for the format of the return
+	// value.
 	_psTokenizeOrigText() {
 		local i, isNoun, j, match, nounV, toks, v, verbV;
 
+		// If we're not the original action, get the value from
+		// the original action and return it.
 		if(getOriginalAction() != self)
 			return(getOriginalAction()._psTokenizeOrigText());
+
+		// The original tokens.
 		toks = getPredicate().getOrigTokenList();
+
+		// Vectors to hold our results.
 		verbV = new Vector();
 		nounV = new Vector();
+
+		// Go through the tokens and figure out which ones are
+		// part of a noun phrase and which aren't.  This is similar
+		// to how Action.getEnteredVerbPhrase() works, but we're
+		// keeping track of both verb AND nouns.
 		for(i = 1; i <= toks.length; i++) {
 			isNoun = nil;
 			predicateNounPhrases.forEach(function(prop) {
@@ -199,31 +226,60 @@ modify Action
 				verbV.append(getTokVal(toks[i]));
 		}
 
+		// Wrap our results vectors in an object and return them.
 		return(new PSTokens(verbV, nounV));
 	}
 
-	_psPossRexPat = '\'s'
-	_psPossRex = nil
-
+	// See if the given string is the possessor from a possessive
+	// adjective in the originally-typed noun phrase.
+	// In other words, if txt is "alice", we're checking to see
+	// if the originally-typed command contained a noun phrase with
+	// "alice's" in it.
+	// If so, returns the full noun phrase (i.e., "alice's pebble"),
+	// nil otherwise.
 	_psMatchPossessive(txt) {
 		local i, j, l, r;
 
-		if(_psPossRex == nil)
-			_psPossRex = new RexPattern(_psPossRexPat);
-
+		// Get the nouns from the original command.  This will be
+		// an array of arrays, where each element of the "outermost"
+		// array corresponds to a noun phrase, and ITS elements
+		// are the individual words in that noun phrase.  For
+		// example >X ALICE'S PEBBLE would produce a value
+		// that looks like [ [ 'alice', '\'s', 'pebble' ] ].  That
+		// is, a 1-element list (because there's only one noun
+		// phrase), and that element is a 3-element list (because
+		// the noun phrase is parsed into three tokens, including
+		// one for the apostrope-S, which is one of the ideosyncracies
+		// all of this is here to handle).
 		l = _psTokenizeOrigText().nounToks;
+
+		// Go through our list of noun phrases.
 		for(i = 1; i <= l.length; i++) {
+			// See if this noun phrase the string we're looking for.
 			if((j = l[i].indexOf(txt)) == nil)
 				continue;
+
+			// The string matched, but we have to make sure a) that
+			// it isn't the last word, and b) that the word after
+			// it is "'s".
 			if((j < l[1].length)
 				&& (rexMatch(_psPossRex, l[i][j + 1]) != nil)) {
+				// Found our possessive, so now we join
+				// the bits of the noun phrase to produce
+				// a single string.
 				r = l[i].join(' ');
-				r = rexReplace(' ' + _psPossRexPat, r,
+
+				// Remove the extra space between the possessor
+				// and the apostrope-S.
+				r = rexReplace(_psSpacePossRex, r,
 					_psPossRexPat);
+
+				// Return the string.
 				return(r);
 			}
 		}
 
+		// If we made it this far we didn't match anything, give up.
 		return(nil);
 	}
 ;
