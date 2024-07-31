@@ -10,18 +10,40 @@
 modify libMessages
 	personNotHere(actor, person) {
 		gMessageParams(person);
-		"There {is person}n't anyone named {you person/him} here. ";
+		"There {is person}n't anyone named {you person/him} {|t}here. ";
 	}
 	personNotHereButKnown(actor, person) {
 		gMessageParams(person);
-		"{That person/He} {is person}n't here. ";
+		"{That person/He} {is person}n't {|t}here. ";
+	}
+	personalObjectNotHere(actor, txt) {
+		"{You/He} {do}n't see \^<<txt>> {|t}here. ";
 	}
 ;
 
 modify playerMessages
+/*
 	noMatch(actor, action, txt) {
-		if(tryPersonScope(actor, action, txt))
-			return;
+		local f0, f1;
+
+aioSay('\nplayerMessages.noMatch()\n ');
+		f0 = action._psMatchPossessive(txt);
+		f1 = tryPersonScope(actor, action, txt);
+
+f0 = nil;
+f1 = nil;
+		if(f0 && f1) {
+			actor.notifyParseFailure(gActor,
+				&personalObjectNotHere, f0);
+			exit;
+		} else if(f1) {
+			if(actor.knowsAbout(f1))
+				prop = &personNotHereButKnown;
+			else
+				prop = &personNotHere;
+			actor.notifyParseFailure(gActor, prop, f1);
+			exit;
+		}
 		inherited(actor, action, txt);
 	}
 
@@ -92,15 +114,8 @@ modify playerMessages
 		if(!obj.ofKind(Person))
 			return(nil);
 
-		// Hurray, we know what's going on.  Figure out what
-		// error message to use.
-		if(gActor.knowsAbout(obj))
-			prop = &personNotHereButKnown;
-		else
-			prop = &personNotHere;
 
-		// Notify the actor of the failure.
-		actor.notifyParseFailure(gActor, prop, obj);
-		exit;
+		return(obj);
 	}
+*/
 ;

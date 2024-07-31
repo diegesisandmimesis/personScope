@@ -24,6 +24,8 @@
 versionInfo: GameID;
 gameMain: GameMainDef initialPlayerChar = me;
 
+rock: Thing '(blue) rock' 'rock' "A blue rock. ";
+
 middleRoom: Room 'Middle Room'
 	"This is the middle room.  There are rooms north, south, and east
 		of here. "
