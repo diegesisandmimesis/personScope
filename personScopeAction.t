@@ -87,18 +87,12 @@ modify Action
 		if(f0 && f1) {
 			msgObj.personalObjectNotHere(actor, f0);
 		} else if(f1) {
-			// Next case if when we DO NOT have a possessive
-			// adjective but the noun phrase DOES refer to
-			// a Person not in scope.
-			// If the actor already knows the Person,
-			// we respond with something like "She isn't here. "
-			// and if they don't know the Person we respond
-			// with something like "There isn't anyone named
-			// Alice here. "
-			if(actor.knowsAbout(f1))
-				msgObj.personNotHereButKnown(actor, f1);
-			else
-				msgObj.personNotHere(actor, f1);
+			// Say something like "There isn't anyone named
+			// Alice here. ".  The message method figures
+			// out whether or not the actor knows about
+			// the out-of-scope person and responds slightly
+			// differently in each case.
+			msgObj.personNotHere(actor, f1);
 		} else {
 			// All of that elaborate nonsense was for nothing.
 			// We fall back on the default, something like
